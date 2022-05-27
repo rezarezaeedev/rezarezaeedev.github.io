@@ -1,0 +1,76 @@
+@import './fonts/Poppins/font.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+      font-family: Poppins, system-ui, sans-serif;
+    }
+
+
+.myshape{
+  border-radius: 90% / 15% ;
+  border-start-end-radius: 0;
+  border-start-start-radius: 0;
+  
+}
+
+@media screen and (max-width:768px) {
+  .myshape{
+    border-radius: 90% / 8% ;
+    border-start-end-radius: 0;
+    border-start-start-radius: 0;
+    
+  }
+}
+
+::-webkit-scrollbar{
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #FFAF40;
+  border-radius: 10px;
+}
+
+
+.scrollpurple{
+  scrollbar-color: #7B2CFF white; 
+  scrollbar-width: thin;
+  
+}
+
+/* purple scrollbar for webkits */
+.scrollpurple::-webkit-scrollbar-thumb{
+  background: #7B2CFF;
+  border-radius: 10px;
+}
+
+ 
+::selection{
+  color:#7B2CFF;
+  background: #FFAF40;
+  border-radius: 10px;
+}
+ 
+::-moz-selection{
+  color: #7B2CFF;
+  background: #FFAF40;
+  border-radius: 10px;
+
+}
+
+
+}
+
+
+*.tip{
+  color:green
+}
