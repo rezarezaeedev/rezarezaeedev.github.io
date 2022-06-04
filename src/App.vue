@@ -1,21 +1,47 @@
 <script>
- 
+import resumeapi from './apis/resume-api';
+import { defineAsyncComponent } from 'vue';
+
+export default{
+    data(){
+        return {
+            skills:[],
+            familiarity_skills:[],
+        }
+    },
+
+    components:{
+        'badge-list':defineAsyncComponent(()=> import('./components/badge-list.vue') ),
+    },
+
+    created(){
+        this.load_skills()
+        this.load_familiarity_skills()
+    },
+
+    methods:{
+        load_skills(){
+            resumeapi.get('skills/skills')
+            .then(res=>{
+                this.skills=res.data
+            })
+            .catch(err=>console.log(err))
+        },
+
+        load_familiarity_skills(){
+            resumeapi.get('skills/familiarities')
+            .then(res=>{
+                this.familiarity_skills=res.data
+            })
+            .catch(err=>console.log(err))
+        },
+    }
+
+}
 </script>
 
 <template>
- <div class=""> <!--Under construction tag-->
-    <div class="flex flex-col fixed w-full bg-yellow-500 opacity-90 ring-8 ring-yellow-700 text-center text-rezablack  space-x-2 laptop:p-5 phone:p-4 p-2  ">
-        <div class="flex  w-full  items-center justify-center laptop:space-x-5 tablet:space-x-4 desktop:text-7xl laptop:text-6xl tablet:text-5xl phone:text-4xl text-2xl font-semibold">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="z-30  desktop:w-12 desktop:h-12 laptop:w-11  laptop:h-11  tablet:w-10  tablet:h-10  phone:w-9  phone:h-9 w-6 h-6 " viewBox="0 0 24 24">
-                <path class=" " d="M12 1l-12 22h24l-12-22zm-1 8h2v7h-2v-7zm1 11.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/>
-            </svg>
-            <p class="text-center inline">under construction</p>
-        </div>
-        <p class="font-light laptop:text-base tablet:text-[0.8rem] phone:text-[0.6rem]  text-[0.45rem] py-2">Simple page created by TailwindCss, VueJs(<span class="font-normal">No backend</span>)</p>
-    </div> <!--Copyright text-->
-    <p class="tablet:p-20 phone:p-16 p-12 bg-rezablack w-full "> </p> <!--Empty line box-->
- </div>
- <header class=" w-full bg-rezablack myshape shadow-md shadow-rezaprimary flex laptop:flex-row flex-col-reverse items-center justify-between phone:px-24 px-5 pt-10 laptop:pb-24  pb-10 laptop:mb-44 mb-16">
+    <header class=" w-full bg-rezablack myshape shadow-md shadow-rezaprimary flex laptop:flex-row flex-col-reverse items-center justify-between phone:px-24 px-5 pt-10 laptop:pb-24  pb-10 laptop:mb-44 mb-16">
         <div class="flex flex-col laptop:w-6/12 w-full laptop:space-y-8 space-y-11 mb-9 mt-8 laptop:text-left text-center ">
             <h1 class="text-rezaprimary tablet:text-6xl phone:text-5xl text-4xl capitalize"><strong>Reza Rezaee</strong></h1>
             <article class="space-y-0 laptop:min-w-[26rem] laptop:w-7/12 tablet:mx-0 phone:mx-auto">
@@ -33,73 +59,16 @@
     <main class="container desktop:px-20 px-2 mx-auto desktop:space-y-36 space-y-24">
         <div class="flex laptop:flex-row flex-col items-center laptop:space-x-40 laptop:space-y-0  space-y-24 box-border">  <!--Main Skills box -->
             <div class="laptop:w-6/12 tablet:w-8/12 laptop:self-baseline">    <!--Skills box -->
-                <h4 class="text-center border-b-4 mb-6 pb-3 border-rezasecondary"> <!--box title-->
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="hover:animate-spin bi bi-star-fill text-rezablack inline-block align-top desktop:w-6 desktop:h-6 w-5 h-5" viewBox="0 0 16 16">
-                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                    </svg>
-                    <span class="laptop:text-4xl tablet:text-3xl text-2xl font-semibold text-rezablack">Skills</span>    
-                </h4>
-                <ul class="flex flex-wrap px-4  "> <!--  justify-center -->
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Python Language</a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Django framework</a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Rest framework</a>
-                    </li>
-      
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Git/Github</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">SQL</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Agile/Scrum/Kanban</a>
-                    </li>
-
-                </ul>
+                <badge-list :items="skills" name="Skills">
+                    <template v-slot:icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="hover:animate-spin bi bi-star-fill text-rezablack inline-block align-top desktop:w-6 desktop:h-6 w-5 h-5" viewBox="0 0 16 16">
+                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                        </svg>
+                    </template>
+                </badge-list>
             </div>
             <div class="laptop:w-6/12 tablet:w-8/12 laptop:self-baseline">    <!--Familiarity box -->
-                <h4 class="text-center border-b-4 mb-6 pb-3 border-rezasecondary"> <!--box title-->
-                    <span class="laptop:text-4xl tablet:text-3xl text-2xl font-semibold text-rezablack">Familiarity</span>    
-                </h4>
-                <ul class="flex flex-wrap px-4  "> <!--  justify-center -->
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Html/Css</a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">TailwindCss</a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Figma</a>
-                    </li>
-      
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Js/Vuejs</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Nginx</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">FastApi</a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Linux essential</a>
-                    </li>
-
-                </ul>
+                <badge-list :items="familiarity_skills" name="Familiarity"></badge-list>
             </div>
         </div>
 
@@ -295,8 +264,7 @@
         </div>
     </footer>
     <p class="bg-gray-800  text-center text-white tablet:text-sm text-[0.6rem] py-1">Copyright &copy; 2022 Reza Rezaee. All rights reserved.</p> <!--Copyright text-->
- 
-</template>
+ </template>
 
 <style>
 
