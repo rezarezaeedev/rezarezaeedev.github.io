@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL:'https://rezarezaeedev.herokuapp.com/',
+    baseURL:'http://rezarezaeedev.pythonanywhere.com/',
     timeout:5000
 })
 
