@@ -189,7 +189,7 @@ export default{
             </div>
         </div>
     </footer>
-    <p class="bg-gray-800  text-center text-white tablet:text-sm text-[0.6rem] py-1">Copyright &copy; 2022 Reza Rezaee. All rights reserved.</p> <!--Copyright text-->
+    <p class="bg-gray-800  text-center text-white tablet:text-sm phone:text-xs text-[0.5rem] py-1">Copyright &copy; 2022 Reza Rezaee. All rights reserved.</p> <!--Copyright text-->
  </template>
 
 <style>
