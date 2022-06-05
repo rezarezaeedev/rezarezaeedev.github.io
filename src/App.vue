@@ -10,6 +10,8 @@ export default{
             experiences:[],
             interests:[],
             is_loaded:false,
+            site_settings:{},
+            personalinfo:{},
         }
     },
 
@@ -18,7 +20,6 @@ export default{
         'badge-item':defineAsyncComponent(()=>import('./components/badge-item.vue')),
         'experience-item':defineAsyncComponent(()=>import('./components/experience-item.vue')),
         'interest-group':defineAsyncComponent(()=>import('./components/interest-group.vue')),
-
     },
 
     created(){
@@ -26,6 +27,8 @@ export default{
         this.load_familiarity_skills()
         this.load_experiences()
         this.load_interest_groups()
+        this.load_sitesettings()
+        this.load_personalinfo()
     },
 
     mounted(){
@@ -78,6 +81,22 @@ export default{
                     })
                     .catch(err=>console.log(err))
             }
+        },
+
+        load_sitesettings(){
+            resumeapi.get(`sitesettings/`)
+                    .then(res=>{
+                        this.site_settings=res.data
+                    })
+                    .catch(err=>console.log(err))
+        },
+
+        load_personalinfo(){
+            resumeapi.get(`personalinfo/`)
+                    .then(res=>{
+                        this.personalinfo=res.data
+                    })
+                    .catch(err=>console.log(err))
         },
     }
 }
@@ -189,7 +208,10 @@ export default{
             </div>
         </div>
     </footer>
-    <p class="bg-gray-800  text-center text-white tablet:text-sm phone:text-xs text-[0.5rem] py-1">Copyright &copy; 2022 Reza Rezaee. All rights reserved.</p> <!--Copyright text-->
+    <div class="flex laptop:flex-row flex-col-reverse justify-center laptop:divide-x-2 divide-rezasecondary bg-gray-800 text-center text-white tablet:text-sm phone:text-xs text-[0.5rem] py-1">
+        <p class="laptop:px-3 py-1">{{site_settings.copyright_text}}</p>
+        <p class="laptop:px-3 py-1">{{site_settings.builded_text}}</p>
+    </div> <!--Copyright text-->
  </template>
 
 <style>
