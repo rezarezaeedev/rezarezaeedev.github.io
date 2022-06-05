@@ -7,16 +7,29 @@ export default{
         return {
             skills:[],
             familiarity_skills:[],
+            experiences:[],
+            interests:[],
+            is_loaded:false,
         }
     },
 
     components:{
         'badge-list':defineAsyncComponent(()=> import('./components/badge-list.vue') ),
+        'badge-item':defineAsyncComponent(()=>import('./components/badge-item.vue')),
+        'experience-item':defineAsyncComponent(()=>import('./components/experience-item.vue')),
+        'interest-group':defineAsyncComponent(()=>import('./components/interest-group.vue')),
+
     },
 
     created(){
         this.load_skills()
         this.load_familiarity_skills()
+        this.load_experiences()
+        this.load_interest_groups()
+    },
+
+    mounted(){
+        this.is_loaded=true
     },
 
     methods:{
@@ -35,8 +48,38 @@ export default{
             })
             .catch(err=>console.log(err))
         },
-    }
 
+        load_experiences(){
+            resumeapi.get('experiences')
+            .then(res=>{
+                this.experiences=res.data
+            })
+            .catch(err=>console.log(err))
+        },
+        
+        load_interest_groups(){
+            resumeapi.get('interestgroups')
+            let groups;
+            resumeapi.get('interestgroups')
+                .then(res=>{
+                    groups=res.data;
+                    this.load_interest_badges(groups);
+                
+                })
+                .catch(err=>console.log(err))
+        },
+        
+        load_interest_badges(groups){
+            for (const group of groups) {
+                resumeapi.get(`interestbadges/${group.id}`)
+                    .then(res=>{
+                        let temp = {...group, 'badges':res.data}
+                        this.interests.push(temp)
+                    })
+                    .catch(err=>console.log(err))
+            }
+        },
+    }
 }
 </script>
 
@@ -56,162 +99,45 @@ export default{
             <img class="laptop:w-64 laptop:h-64 phone:w-60 phone:h-60 w-48 h-48 rounded-full object-cover bg-auto hover:scale-125 transition-all ease-in-out outline-none ring-rezaprimary ring-4" src="./assets/images/mr2-min.jpg" alt="Reza Rezaee face photo">
         </div>
     </header>
-    <main class="container desktop:px-20 px-2 mx-auto desktop:space-y-36 space-y-24">
+    <main class="container desktop:px-20 px-2 mx-auto desktop:space-y-36 space-y-24" v-if="is_loaded">
         <div class="flex laptop:flex-row flex-col items-center laptop:space-x-40 laptop:space-y-0  space-y-24 box-border">  <!--Main Skills box -->
             <div class="laptop:w-6/12 tablet:w-8/12 laptop:self-baseline">    <!--Skills box -->
-                <badge-list :items="skills" name="Skills">
+                <badge-list name="Skills">
                     <template v-slot:icon>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="hover:animate-spin bi bi-star-fill text-rezablack inline-block align-top desktop:w-6 desktop:h-6 w-5 h-5" viewBox="0 0 16 16">
                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                     </template>
+                    <badge-item v-for="data in skills" :key="data.id" :data="data"></badge-item>
                 </badge-list>
             </div>
+
             <div class="laptop:w-6/12 tablet:w-8/12 laptop:self-baseline">    <!--Familiarity box -->
-                <badge-list :items="familiarity_skills" name="Familiarity"></badge-list>
+                <badge-list name="Familiarity">
+                    <badge-item v-for="data in familiarity_skills" :key="data.id" :data="data"></badge-item>
+                </badge-list>
             </div>
-        </div>
+         </div>
 
         <div class="laptop:w-full tablet:w-8/12 mx-auto">  <!--Experiences/Projects Box-->
-            <h4 class="text-center border-b-4 mb-6 pb-3 border-rezasecondary"> <!--box title-->
-                <span class="laptop:text-4xl tablet:text-3xl text-2xl font-semibold text-rezablack">Experiences/Projects</span>    
-            </h4>
-            <ul class="flex flex-wrap px-4 divide-y-2 space-y-12"> <!--  justify-center -->
-                <li class="flex justify-between divide-x-2"> <!--  experience item -->
-                    <div class="space-y-2">
-                        <div class="flex space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="laptop:w-5 laptop:h-5 w-4 h-4 bi bi-hexagon-fill text-rezasecondary self-center" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z"/>
-                              </svg>
-                            <h4 class="text-rezasecondary font-bold laptop:text-2xl text-xl ">Backend developer</h4>
-                        </div>
-                        <div class="pl-6 space-y-1  laptop:w-7/12 w-full "> 
-                            <a href="https://fanavarco.com" target="_blank"  class="flex flex-row text-rezablack space-x-3"> 
-                                <h3 class="inline laptop:text-lg text-base font-semibold ">Fanavar pouya sepahan(Fapsco)</h3>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="text-rezablack self-center bi bi-hand-index-fill animate-pulse" viewBox="0 0 16 16">
-                                    <path d="M8.5 1.75v2.716l.047-.002c.312-.012.742-.016 1.051.046.28.056.543.18.738.288.273.152.456.385.56.642l.132-.012c.312-.024.794-.038 1.158.108.37.148.689.487.88.716.075.09.141.175.195.248h.582a2 2 0 0 1 1.99 2.199l-.272 2.715a3.5 3.5 0 0 1-.444 1.389l-1.395 2.441A1.5 1.5 0 0 1 12.42 16H6.118a1.5 1.5 0 0 1-1.342-.83l-1.215-2.43L1.07 8.589a1.517 1.517 0 0 1 2.373-1.852L5 8.293V1.75a1.75 1.75 0 0 1 3.5 0z"/>
-                                </svg>
-                            </a>
-                            <p class="text-rezablack text-justify laptop:text-base text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio incidunt eveniet quibusdam? Impedit dignissimos minima officiis architecto laboriosam aliquam molestiae.</p>
-                            <div class="flex justify-between">
-                                <i class="text-rezablack laptop:text-base text-sm pr-1">1400/05/20 - 1400/09/01</i>
-                                <i class="text-rezablack laptop:text-base text-sm pl-1">Esfahan</i>
-                            </div>
-                        </div> 
-                    </div>
-                </li>
-
-                <li class="flex justify-between divide-x-2"> <!--  experience item -->
-                    <div class="space-y-2">
-                        <div class="flex space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="laptop:w-5 laptop:h-5 w-4 h-4 bi bi-hexagon-fill text-rezasecondary self-center" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z"/>
-                              </svg>
-                            <h4 class="text-rezasecondary font-bold laptop:text-2xl text-xl ">Backend developer</h4>
-                        </div>
-                        <div class="pl-6 space-y-1  laptop:w-7/12 w-full "> 
-                            <a href="https://fanavarco.com" target="_blank"  class="flex flex-row text-rezablack space-x-3"> 
-                                <h3 class="inline laptop:text-lg text-base font-semibold ">Fanavar pouya sepahan(Fapsco)</h3>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="text-rezablack self-center bi bi-hand-index-fill animate-pulse" viewBox="0 0 16 16">
-                                    <path d="M8.5 1.75v2.716l.047-.002c.312-.012.742-.016 1.051.046.28.056.543.18.738.288.273.152.456.385.56.642l.132-.012c.312-.024.794-.038 1.158.108.37.148.689.487.88.716.075.09.141.175.195.248h.582a2 2 0 0 1 1.99 2.199l-.272 2.715a3.5 3.5 0 0 1-.444 1.389l-1.395 2.441A1.5 1.5 0 0 1 12.42 16H6.118a1.5 1.5 0 0 1-1.342-.83l-1.215-2.43L1.07 8.589a1.517 1.517 0 0 1 2.373-1.852L5 8.293V1.75a1.75 1.75 0 0 1 3.5 0z"/>
-                                </svg>
-                            </a>
-                            <p class="text-rezablack text-justify laptop:text-base text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio incidunt eveniet quibusdam? Impedit dignissimos minima officiis architecto laboriosam aliquam molestiae.</p>
-                            <div class="flex justify-between">
-                                <i class="text-rezablack laptop:text-base text-sm pr-1">1400/05/20 - 1400/09/01</i>
-                                <i class="text-rezablack laptop:text-base text-sm pl-1">Esfahan</i>
-                            </div>
-                        </div> 
-                    </div>
-                </li>
-
-                <li class="flex justify-between divide-x-2"> <!--  experience item -->
-                    <div class="space-y-2">
-                        <div class="flex space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="laptop:w-5 laptop:h-5 w-4 h-4 bi bi-hexagon-fill text-rezasecondary self-center" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z"/>
-                              </svg>
-                            <h4 class="text-rezasecondary font-bold laptop:text-2xl text-xl ">Backend developer</h4>
-                        </div>
-                        <div class="pl-6 space-y-1  laptop:w-7/12 w-full "> 
-                            <a href="https://fanavarco.com" target="_blank"  class="flex flex-row text-rezablack space-x-3"> 
-                                <h3 class="inline laptop:text-lg text-base font-semibold ">Fanavar pouya sepahan(Fapsco)</h3>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="text-rezablack self-center bi bi-hand-index-fill animate-pulse" viewBox="0 0 16 16">
-                                    <path d="M8.5 1.75v2.716l.047-.002c.312-.012.742-.016 1.051.046.28.056.543.18.738.288.273.152.456.385.56.642l.132-.012c.312-.024.794-.038 1.158.108.37.148.689.487.88.716.075.09.141.175.195.248h.582a2 2 0 0 1 1.99 2.199l-.272 2.715a3.5 3.5 0 0 1-.444 1.389l-1.395 2.441A1.5 1.5 0 0 1 12.42 16H6.118a1.5 1.5 0 0 1-1.342-.83l-1.215-2.43L1.07 8.589a1.517 1.517 0 0 1 2.373-1.852L5 8.293V1.75a1.75 1.75 0 0 1 3.5 0z"/>
-                                </svg>
-                            </a>
-                            <p class="text-rezablack text-justify laptop:text-base text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio incidunt eveniet quibusdam? Impedit dignissimos minima officiis architecto laboriosam aliquam molestiae.</p>
-                            <div class="flex justify-between">
-                                <i class="text-rezablack laptop:text-base text-sm pr-1">1400/05/20 - 1400/09/01</i>
-                                <i class="text-rezablack laptop:text-base text-sm pl-1">Esfahan</i>
-                            </div>
-                        </div> 
-                    </div>
-                </li>
-            </ul>
+            <badge-list name="Experiences/Projects" extra_class="space-y-12 divide-y-2 ">
+                <experience-item v-for="data in experiences" :key="data.id" :data="data"></experience-item>
+            </badge-list>
         </div>
 
-        <div class="">    <!--Main Interests box-->
-            <h4 class="text-center border-b-4 mb-7 pb-3 border-rezasecondary"> <!--box title-->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="hover:animate-bounce bi bi-balloon-heart-fill text-rezablack hover:text-red-500 inline-block align-top desktop:w-6 desktop:h-6 w-5 h-5" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2.376 2.376 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386Z"/>
-                </svg>
-                <span class="laptop:text-4xl tablet:text-3xl text-2xl font-semibold text-rezablack">Interests</span>    
-            </h4> 
-           <div class="tablet:space-y-14 space-y-12"> <!--InWork/Personal Interests list-->
-                <div class="flex tablet:flex-row flex-col tablet:items-baseline items-center"> <!--InWork interests list-->
-                    <h5 class="text-rezablack tablet:text-base font-semibold text-lg w-[6rem] text-center" title="My favorite branchs in work and computer science">#InWork:</h5>
-                    <ul class="flex flex-wrap px-4 tablet:place-content-start "> <!--  justify-center -->
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Learning more</a>
-                        </li>
-    
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Microservice</a>
-                        </li>
-          
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Event/Message driven</a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Database paradigms</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="flex tablet:flex-row flex-col tablet:items-baseline items-center"> <!--Personal interests list-->
-                    <h5 class="text-rezablack tablet:text-base font-semibold text-lg w-[6rem] text-center" title="My favorite subjects in life">#Personal:</h5>
-                    <ul class="flex flex-wrap px-4 tablet:place-content-start "> <!--  justify-center -->
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Team Work</a>
-                        </li>
-        
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Travel/Food</a>
-                        </li>
-        
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Cars</a>
-                        </li>
-        
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Entrepreneurship</a>
-                        </li>
-        
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Book/Study</a>
-                        </li>
-        
-                        <li>
-                            <a href="#" class="tablet:text-base text-xs inline-block px-4 py-2 my-3 mr-3 bg-rezablack text-rezawhite rounded-full hover:scale-105 hover:text-rezaprimary select-none">Meeting</a>
-                        </li>
-                    </ul>
-                </div>
-
-           </div>
+        <div class="laptop:w-full tablet:w-8/12 mx-auto">  <!--Main Interests box-->
+            <badge-list name="Interests" extra_class="flex-col space-y-10">
+                <template v-slot:icon>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="hover:animate-bounce bi bi-balloon-heart-fill text-rezablack hover:text-red-500 inline-block align-top desktop:w-6 desktop:h-6 w-5 h-5" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.49 10.92C19.412 3.382 11.28-2.387 8 .986 4.719-2.387-3.413 3.382 7.51 10.92l-.234.468a.25.25 0 1 0 .448.224l.04-.08c.009.17.024.315.051.45.068.344.208.622.448 1.102l.013.028c.212.422.182.85.05 1.246-.135.402-.366.751-.534 1.003a.25.25 0 0 0 .416.278l.004-.007c.166-.248.431-.646.588-1.115.16-.479.212-1.051-.076-1.629-.258-.515-.365-.732-.419-1.004a2.376 2.376 0 0 1-.037-.289l.008.017a.25.25 0 1 0 .448-.224l-.235-.468ZM6.726 1.269c-1.167-.61-2.8-.142-3.454 1.135-.237.463-.36 1.08-.202 1.85.055.27.467.197.527-.071.285-1.256 1.177-2.462 2.989-2.528.234-.008.348-.278.14-.386Z"/>
+                    </svg>
+                </template>
+                <interest-group v-for="data in interests" :key="data.id" :data="data"></interest-group>
+            </badge-list>
         </div>
+
     </main>
+    <div class="container mx-auto text-center laptop:my-32 tablet:my-20 my-10 laptop:text-4xl tablet:text-3xl text-lg text-rezasecondary animate-pulse" v-else>Please wait, is loading...</div>
 
     <footer class="bg-rezablack px-10 py-5 mt-28 flex flex-col"> 
         
