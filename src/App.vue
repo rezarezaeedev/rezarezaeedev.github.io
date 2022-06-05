@@ -147,7 +147,7 @@ export default{
     </main>
     <div class="container mx-auto text-center laptop:my-32 tablet:my-20 my-10 laptop:text-4xl tablet:text-3xl text-lg text-rezasecondary animate-pulse" v-else>Please wait, is loading...</div>
 
-    <!-- <my-footer :data="personal_info"></my-footer> -->
+    <my-footer :data="personal_info"></my-footer>
     <div class="flex laptop:flex-row flex-col-reverse justify-center laptop:divide-x-2 divide-rezasecondary bg-gray-800 text-center text-white tablet:text-sm phone:text-xs text-[0.5rem] py-1">
         <p class="laptop:px-3 py-1">{{site_settings.copyright_text}}</p>
         <p class="laptop:px-3 py-1">{{site_settings.builded_text}}</p>
